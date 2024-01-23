@@ -1,5 +1,5 @@
 ---
-- name: Install fzf and neovim
+- name: Install essential tools
   hosts: all
   become: true
   gather_facts: true
@@ -9,9 +9,10 @@
       apt:
         update_cache: yes
 
-    - name: Install fzf and neovim
+    - name: Install essential tools
       apt:
         name:
+        - git
         - fzf
         - neovim
         state: present
@@ -23,6 +24,25 @@
           source /usr/share/doc/fzf/examples/key-bindings.bash
         regexp: "^source /usr/share/doc/fzf/examples/key-bindings.bash$"
         state: present
+      args:
+        insertafter: EOF
+      become: false
+      become_user: "{{ ansible_user }}"
+
+    - name: Add git branch to console prompt
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          # git branch in prompt.
+          parse_git_branch() {
+            git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
+          }
+          RED="\[\033[0;31m\]"
+          YELLOW="\[\033[0;33m\]"
+          GREEN="\[\033[0;32m\]"
+          BLUE="\[\033[0;34m\]"
+          NO_COLOR="\[\033[0m\]"
+          PS1="$GREEN\u@\h$NO_COLOR:\w$YELLOW\$(parse_git_branch)$NO_COLOR\$ "
       args:
         insertafter: EOF
       become: false
