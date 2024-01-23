@@ -1,0 +1,29 @@
+---
+- name: Install fzf and neovim
+  hosts: all
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install fzf and neovim
+      apt:
+        name:
+        - fzf
+        - neovim
+        state: present
+
+    - name: Source fzf keybindings for bash
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          source /usr/share/doc/fzf/examples/key-bindings.bash
+        regexp: "^source /usr/share/doc/fzf/examples/key-bindings.bash$"
+        state: present
+      args:
+        insertafter: EOF
+      become: false
+      become_user: "{{ ansible_user }}"

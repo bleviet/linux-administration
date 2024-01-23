@@ -1,0 +1,37 @@
+- name: Install VSCode
+  hosts: all
+  become: true
+  tasks:
+    - name: Add Microsoft GPG key
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Add VSCode repository
+      apt_repository:
+        repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+        state: present
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install VSCode
+      apt:
+        name: code
+        state: present
+
+    - name: Install VSCode Plugins
+      shell: code --install-extension {{ item }}
+      with_items:
+        - vscode-icons-team.vscode-icons
+        - rjyoung.vscode-modern-vhdl-support
+        - mshr-h.veriloghdl
+        - eamodio.gitlens
+        - ms-vscode.cpptools
+        - ms-python.python
+        - GitHub.copilot
+        - GitHub.copilot-chat
+        - EditorConfig.EditorConfig
+      become: false
+      become_user: "{{ ansible_user }}"
