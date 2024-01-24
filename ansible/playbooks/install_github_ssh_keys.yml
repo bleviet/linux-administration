@@ -19,8 +19,10 @@
       lineinfile:
         path: "/home/{{ ansible_user }}/.bashrc"
         line: |
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
+          if [ -z "$SSH_AUTH_SOCK" ] ; then
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa
+          fi
       args:
         insertafter: EOF
 
