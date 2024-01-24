@@ -1,3 +1,4 @@
+---
 - name: Copy SSH keys to remote machine
   hosts: all
   become_user: "{{ ansible_user }}"

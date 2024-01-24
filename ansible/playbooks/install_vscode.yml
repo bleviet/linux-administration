@@ -1,3 +1,4 @@
+---
 - name: Install VSCode
   hosts: all
   become: true
