@@ -1,0 +1,33 @@
+---
+- name: Install and update dot files
+  hosts: all
+  become_user: "{{ ansible_user }}"
+  gather_facts: true
+
+  tasks:
+    - name: Source fzf keybindings for bash
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          source /usr/share/doc/fzf/examples/key-bindings.bash
+        regexp: "^source /usr/share/doc/fzf/examples/key-bindings.bash$"
+        state: present
+      args:
+        insertafter: EOF
+
+    - name: Add git branch to console prompt
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          # git branch in prompt.
+          parse_git_branch() {
+            git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
+          }
+          RED="\[\033[0;31m\]"
+          YELLOW="\[\033[0;33m\]"
+          GREEN="\[\033[0;32m\]"
+          BLUE="\[\033[0;34m\]"
+          NO_COLOR="\[\033[0m\]"
+          PS1="$GREEN\u@\h$NO_COLOR:\w$YELLOW\$(parse_git_branch)$NO_COLOR\$ "
+      args:
+        insertafter: EOF
