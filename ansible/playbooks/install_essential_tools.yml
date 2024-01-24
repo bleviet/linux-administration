@@ -17,6 +17,7 @@
           - fzf
           - neovim
           - meld
+          - bat
         state: present
 
     - name: Install lazygit
@@ -27,3 +28,19 @@
         sudo install lazygit /usr/local/bin
       args:
         executable: /bin/bash
+
+    - name: Install zoxide, a better cd command for your terminal
+      shell: |
+        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+      args:
+        executable: /bin/bash
+
+    - name: Add .local/bin to PATH
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          export PATH="$HOME/.local/bin:$PATH"
+        regexp: "^export PATH=\"\$HOME/.local/bin:\$PATH\"$"
+        state: present
+      args:
+        insertafter: EOF

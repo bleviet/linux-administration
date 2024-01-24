@@ -31,3 +31,13 @@
           PS1="$GREEN\u@\h$NO_COLOR:\w$YELLOW\$(parse_git_branch)$NO_COLOR\$ "
       args:
         insertafter: EOF
+
+    - name: Setup zoxide on your shell
+      lineinfile:
+        path: "$HOME/.bashrc"
+        line: |
+          eval "$(zoxide init bash)"
+        regexp: "^eval \"\$\(\(zoxide init bash\)\)\"$"
+        state: present
+      args:
+        insertafter: EOF
