@@ -12,9 +12,9 @@
     - name: Install essential tools
       apt:
         name:
-        - git
-        - fzf
-        - neovim
+          - git
+          - fzf
+          - neovim
         state: present
 
     - name: Source fzf keybindings for bash
