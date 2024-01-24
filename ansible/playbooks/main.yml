@@ -1,0 +1,5 @@
+---
+- import_playbook: install_essential_tools.yml
+- import_playbook: install_docker.yml
+- import_playbook: install_vscode.yml
+- import_playbook: install_github_ssh_keys.yml
