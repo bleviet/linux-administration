@@ -13,8 +13,10 @@
       apt:
         name:
           - git
+          - gitk
           - fzf
           - neovim
+          - meld
         state: present
 
     - name: Source fzf keybindings for bash
