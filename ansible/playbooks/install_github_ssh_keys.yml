@@ -23,3 +23,9 @@
           ssh-add ~/.ssh/id_rsa
       args:
         insertafter: EOF
+
+    - name: Copy .gitconfig
+      copy:
+        src: ~/.gitconfig
+        dest: "/home/{{ ansible_user }}/"
+        mode: 0644
