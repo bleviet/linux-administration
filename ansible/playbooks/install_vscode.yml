@@ -33,5 +33,6 @@
         - GitHub.copilot
         - GitHub.copilot-chat
         - EditorConfig.EditorConfig
+        - ms-azuretools.vscode-docker
       become: false
       become_user: "{{ ansible_user }}"
