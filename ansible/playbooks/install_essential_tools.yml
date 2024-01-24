@@ -18,6 +18,8 @@
           - neovim
           - meld
           - bat
+          - eza
+          - ripgrep
         state: present
 
     - name: Install lazygit
@@ -40,7 +42,7 @@
         path: "$HOME/.bashrc"
         line: |
           export PATH="$HOME/.local/bin:$PATH"
-        regexp: "^export PATH=\"\$HOME/.local/bin:\$PATH\"$"
+        regexp: "^export PATH=\"$HOME/.local/bin:$PATH\"$"
         state: present
       args:
         insertafter: EOF
