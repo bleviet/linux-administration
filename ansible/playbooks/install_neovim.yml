@@ -1,0 +1,68 @@
+---
+- name: Install neovim and lazyvim
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Remove old neovim
+      apt:
+        name: neovim
+        state: absent
+
+    - name: Install prerequisites
+      apt:
+        name:
+          - build-essential
+          - ninja-build
+          - gettext
+          - cmake
+          - unzip
+          - curl
+        state: present
+
+    - name: Install NerdFonts
+      shell: |
+        git clone --depth 1 https://github.com/ryanoasis/nerd-fonts.git ~/.local/share/fonts/nerd-fonts
+        ~/.local/share/fonts/nerd-fonts/install.sh FiraCode
+      args:
+        executable: /bin/bash
+      become: false
+      become_user: "{{ ansible_user }}"
+      tags: install-nerdfonts
+
+    - name: Clone neovim
+      shell: |
+        mkdir -p /tmp/nvim
+        git clone https://github.com/neovim/neovim /tmp/nvim
+        cd /tmp/nvim && git checkout stable
+        make CMAKE_BUILD_TYPE=RelWithDebInfo
+        make install
+        rm -rf /tmp/nvim
+      args:
+        executable: /bin/bash
+
+    - name: Backup old neovim config, data, state and cache, ignore errors
+      shell: |
+        mv ~/.config/nvim{,.bak}
+        mv ~/.local/share/nvim{,.bak}
+        mv ~/.local/state/nvim{,.bak}
+        mv ~/.cache/nvim{,.bak}
+      args:
+        executable: /bin/bash
+      ignore_errors: true
+      become: false
+      become_user: "{{ ansible_user }}"
+
+    - name: Clone lazyvim starter
+      shell: |
+        git clone https://github.com/LazyVim/starter ~/.config/nvim
+        rm -rf ~/.config/nvim/.git
+      args:
+        executable: /bin/bash
+      become: false
+      become_user: "{{ ansible_user }}"
