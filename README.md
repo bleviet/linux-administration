@@ -14,6 +14,7 @@ This repository contains Ansible playbooks and Docker files for managing my deve
     - `install_essential_tools.yml`: Playbook for installing essential tools.
     - `install_github_ssh_keys.yml`: Playbook for installing GitHub SSH keys.
     - `install_vscode.yml`: Playbook for installing Visual Studio Code.
+    - `install_tmux.yml`: Playbook for installing tmux.
     - `main.yml`: The main playbook that includes all other playbooks.
 
 ## Prerequisites
