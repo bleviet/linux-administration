@@ -5,39 +5,20 @@
   gather_facts: true
 
   tasks:
-    - name: Source fzf keybindings for bash
-      lineinfile:
-        path: "$HOME/.bashrc"
-        line: |
-          source /usr/share/doc/fzf/examples/key-bindings.bash
-        regexp: "^source /usr/share/doc/fzf/examples/key-bindings.bash$"
+    - name: Install stow
+      apt:
+        name: stow
         state: present
-      args:
-        insertafter: EOF
 
-    - name: Add git branch to console prompt
-      lineinfile:
-        path: "$HOME/.bashrc"
-        line: |
-          # git branch in prompt.
-          parse_git_branch() {
-            git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ [\1]/'
-          }
-          RED="\[\033[0;31m\]"
-          YELLOW="\[\033[0;33m\]"
-          GREEN="\[\033[0;32m\]"
-          BLUE="\[\033[0;34m\]"
-          NO_COLOR="\[\033[0m\]"
-          PS1="$GREEN\u@\h$NO_COLOR:\w$YELLOW\$(parse_git_branch)$NO_COLOR\$ "
-      args:
-        insertafter: EOF
+    - name: Copy dotfiles folder into home directory
+      copy:
+        src: "../files/dotfiles"
+        dest: "/home/{{ ansible_user }}/"
+        mode: 0755
 
-    - name: Setup zoxide on your shell
-      lineinfile:
-        path: "$HOME/.bashrc"
-        line: |
-          eval "$(zoxide init bash)"
-        regexp: "^eval \"\$\(\(zoxide init bash\)\)\"$"
-        state: present
+    - name: Stow dotfiles
+      shell: |
+        cd /home/{{ ansible_user }}/dotfiles
+        stow -t /home/{{ ansible_user }} -R *
       args:
-        insertafter: EOF
+        executable: /bin/bash
