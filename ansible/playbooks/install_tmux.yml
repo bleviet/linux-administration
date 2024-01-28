@@ -1,0 +1,17 @@
+---
+- name: Install tmux and tpm
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install tmux package
+      apt:
+        name: tmux
+        state: present
+
+    - name: Clone tpm repository
+      shell: |
+        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+      args:
+        executable: /bin/bash
+      become_user: "{{ ansible_user }}"
