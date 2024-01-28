@@ -28,7 +28,7 @@
         name: docker-ce
         state: present
 
-    - name: Add user to Docker group
+    - name: Add user to Docker group, allowing to run Docker commands without sudo
       user:
         name: "{{ ansible_user }}"
         groups: docker

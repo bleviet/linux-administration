@@ -14,7 +14,7 @@
         name: neovim
         state: absent
 
-    - name: Install prerequisites
+    - name: Install prerequisites for building neovim
       apt:
         name:
           - build-essential
@@ -35,7 +35,7 @@
       become_user: "{{ ansible_user }}"
       tags: install-nerdfonts
 
-    - name: Clone neovim
+    - name: Clone and build neovim
       shell: |
         mkdir -p /tmp/nvim
         git clone https://github.com/neovim/neovim /tmp/nvim
