@@ -28,25 +28,15 @@
         LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
         curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
         tar xf lazygit.tar.gz lazygit
-        sudo install lazygit /usr/local/bin
+        install lazygit /usr/local/bin
       args:
         executable: /bin/bash
       tags: install-lazygit
 
     - name: Install zoxide, a better cd command for your terminal
       shell: |
-        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
       args:
         executable: /bin/bash
+      become_user: "{{ ansible_user }}"
       tags: install-zoxide
-
-    - name: Add .local/bin to PATH
-      lineinfile:
-        path: "$HOME/.bashrc"
-        line: |
-          export PATH="$HOME/.local/bin:$PATH"
-        regexp: "^export PATH=\"$HOME/.local/bin:$PATH\"$"
-        state: present
-      args:
-        insertafter: EOF
-      tags: add-local-bin-to-path
