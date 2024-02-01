@@ -42,3 +42,9 @@ You can run a playbook with the following command:
 
 ```sh
 ansible-playbook -i hosts ansible/playbooks/<playbook_name>.yml --ask-pass --ask-become-pass -vv
+
+## Post installation
+
+### Tmux
+1. Start tmux
+2. <C-a><S-i> for installing the plugins
