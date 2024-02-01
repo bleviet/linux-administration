@@ -1,0 +1,83 @@
+---
+- name: Install Rust and Alacritty
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - cmake
+          - pkg-config
+          - libfreetype6-dev
+          - libfontconfig1-dev
+          - libxcb-xfixes0-dev
+          - libxkbcommon-dev
+          - python3
+        state: present
+      when: ansible_os_family == 'Debian' or ansible_os_family == 'Ubuntu'
+
+    - name: Install Rust
+      shell: |
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      args:
+        executable: /bin/bash
+      become: false
+      become_user: "{{ ansible_user }}"
+      tags: install-rust
+
+    - name: Add cargo to PATH in .bashrc, ensure the line is present
+      lineinfile:
+        path: "/home/{{ ansible_user }}/.bashrc"
+        line: 'export PATH="$HOME/.cargo/bin:$PATH"'
+        state: present
+      become: false
+      become_user: "{{ ansible_user }}"
+      tags: add-cargo-to-path
+
+    - name: Remove existing Alacritty directory
+      file:
+        path: "/home/{{ ansible_user }}/tmp/alacritty"
+        state: absent
+      become_user: "{{ ansible_user }}"
+
+    - name: Clone and build Alacritty
+      shell: |
+        source $HOME/.cargo/env
+        git clone https://github.com/alacritty/alacritty.git $HOME/tmp/alacritty
+        cd $HOME/tmp/alacritty
+        cargo build --release
+      args:
+        executable: /bin/bash
+      become_user: "{{ ansible_user }}"
+      tags: clone-build-alacritty
+
+    - name: Copy Alacritty binary to /usr/local/bin
+      copy:
+        src: "/home/{{ ansible_user }}/tmp/alacritty/target/release/alacritty"
+        dest: /usr/local/bin/alacritty
+        mode: 0755
+        remote_src: true
+      become: true
+
+    - name: Copy Alacritty terminfo to /usr/share/terminfo
+      shell: |
+        tic -xe alacritty,alacritty-direct /home/{{ ansible_user }}/tmp/alacritty/extra/alacritty.info
+      args:
+        executable: /bin/bash
+      become: true
+
+    - name: Copy Alacritty desktop file to /usr/share/applications
+      shell: |
+        cp /home/{{ ansible_user }}/tmp/alacritty/extra/linux/Alacritty.desktop /usr/share/applications/Alacritty.desktop
+        update-desktop-database
+      args:
+        executable: /bin/bash
+      become: true
+      tags: copy-alacritty-desktop-file
+
+    - name: Clean up Alacritty directory
+      file:
+        path: "/home/{{ ansible_user }}/tmp/alacritty"
+        state: absent
+      become_user: "{{ ansible_user }}"
