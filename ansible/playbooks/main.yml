@@ -6,3 +6,4 @@
 - import_playbook: install_dotfiles.yml
 - import_playbook: install_neovim.yml
 - import_playbook: install_tmux.yml
+- import_playbook: install_alacritty.yml
