@@ -21,7 +21,7 @@ PS1="$GREEN\u@\h$NO_COLOR:\w$YELLOW\$(parse_git_branch)$NO_COLOR\$ "
 # -----------------------------------------------------------------------------
 alias docker-rmi-dangling='docker rmi $(docker images -f "dangling=true" -q)'
 alias lg='lazygit'
-alias ls='eza --color=always'
+alias ls='exa --color=always'
 alias freeplane='freeplane.sh'
 
 # -----------------------------------------------------------------------------

@@ -1,10 +1,14 @@
 ---
 - name: Install and update dot files
   hosts: all
-  become_user: "{{ ansible_user }}"
+  become: true
   gather_facts: true
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
     - name: Install stow
       apt:
         name: stow
@@ -15,6 +19,7 @@
         src: "../files/dotfiles"
         dest: "/home/{{ ansible_user }}/"
         mode: 0755
+      become_user: "{{ ansible_user }}"
 
     - name: Stow dotfiles
       shell: |
@@ -22,3 +27,4 @@
         stow -t /home/{{ ansible_user }} -R *
       args:
         executable: /bin/bash
+      become_user: "{{ ansible_user }}"

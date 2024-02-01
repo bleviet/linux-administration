@@ -17,9 +17,10 @@
           - fzf
           - meld
           - bat
-          - eza
+          - exa
           - ripgrep
           - tmux
+          - curl
         state: present
 
     - name: Install lazygit
