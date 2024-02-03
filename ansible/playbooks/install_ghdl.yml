@@ -1,0 +1,49 @@
+---
+- name: Install GHDL from source
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install dependencies
+      apt:
+        name:
+          - gnat
+          - zlib1g-dev
+        state: present
+
+    - name: Ensure /tmp/ghdl does not exist, if yes remove it
+      file:
+        path: /tmp/ghdl
+        state: absent
+
+    - name: Clone GHDL repository
+      git:
+        repo: https://github.com/ghdl/ghdl.git
+        dest: /tmp/ghdl          
+        update: no
+      tags: clone-ghdl
+
+    - name: Compile GHDL
+      shell: |
+        cd /tmp/ghdl
+        ./configure --prefix=/usr/local
+        make
+        make install
+      args:
+        executable: /bin/bash
+      tags: compile-ghdl
+
+    - name: Clean up
+      file:
+        path: /tmp/ghdl
+        state: absent
+      tags: clean-up
+
+
+      
+      
