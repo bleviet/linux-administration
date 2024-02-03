@@ -1,0 +1,33 @@
+---
+- name: Install miniconda
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Ensure conda is not installed
+      stat:
+        path: "/home/{{ ansible_user }}/miniconda"
+      register: conda_installed
+
+    - name: Download conda
+      get_url:
+        url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        dest: "/home/{{ ansible_user }}/Downloads/miniconda.sh"
+        mode: 0755
+      become_user: "{{ ansible_user }}"
+      when: conda_installed.stat.exists == False
+
+    - name: Install conda to user's home directory only when conda is not installed
+      shell: |
+        bash $HOME/Downloads/miniconda.sh -b -p $HOME/miniconda
+      args:
+        executable: /bin/bash
+      become_user: "{{ ansible_user }}"
+      when: conda_installed.stat.exists == False
+
+    - name: Initialize conda
+      shell: |
+        $HOME/miniconda/bin/conda init bash
+      args:
+        executable: /bin/bash
+      become_user: "{{ ansible_user }}"
