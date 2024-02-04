@@ -1,0 +1,38 @@
+---
+- name: Add i3 repository and install i3
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Add i3 repository key and install keyring (for Ubuntu)
+      command: "/usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4"
+      args:
+        creates: keyring.deb
+      register: keyring_download_result
+
+    - name: Install i3 keyring (for Ubuntu)
+      apt:
+        deb: "./keyring.deb"
+      when: keyring_download_result is succeeded
+
+    - name: Add i3 repository (for Ubuntu)
+      lineinfile:
+        path: "/etc/apt/sources.list.d/sur5r-i3.list"
+        line: "deb http://debian.sur5r.net/i3/ $(grep '^DISTRIB_CODENAME=' /etc/lsb-release | cut -f2 -d=) universe"
+      notify: apt update
+
+    - name: Install i3
+      apt:
+        name: i3
+        state: latest
+      notify: restart i3
+
+  handlers:
+    - name: apt update
+      apt:
+        update_cache: yes
+
+    - name: restart i3
+      command: "systemctl --user restart i3"
+      async: 1
+      poll: 0
