@@ -193,5 +193,5 @@ bar {
         status_command i3status
 }
 
-exec_always feh --bg-fill /usr/share/backgrounds/DSC2943_by_kcpru.jpg
+exec_always feh --bg-fill $HOME/.config/wallpapers/DSC2943_by_kcpru.jpg
 
