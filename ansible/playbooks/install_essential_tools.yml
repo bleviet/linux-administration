@@ -1,42 +1,30 @@
----
 - name: Install essential tools
   hosts: all
   gather_facts: true
   become: true
+  vars:
+    apt_packages:
+    - git
+    - gitk
+    - fzf
+    - meld
+    - bat
+    - exa
+    - ripgrep
+    - tmux
+    - curl
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+  - name: Update apt cache
+    apt:
+      update_cache: yes
 
-    - name: Install apt tools
-      apt:
-        name:
-          - git
-          - gitk
-          - fzf
-          - meld
-          - bat
-          - exa
-          - ripgrep
-          - tmux
-          - curl
-        state: present
+  - name: Install apt tools
+    apt:
+      name: "{{ apt_packages }}"
+      state: present
 
-    - name: Install lazygit
-      shell: |
-        LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-        curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-        tar xf lazygit.tar.gz lazygit
-        install lazygit /usr/local/bin
-      args:
-        executable: /bin/bash
-      tags: install-lazygit
-
-    - name: Install zoxide, a better cd command for your terminal
-      shell: |
-        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
-      args:
-        executable: /bin/bash
-      become_user: "{{ ansible_user }}"
-      tags: install-zoxide
+  - name: Install zoxide, a better cd command for your terminal
+    command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
+    become_user: "{{ ansible_user }}"
+    tags: install-zoxide

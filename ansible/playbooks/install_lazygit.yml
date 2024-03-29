@@ -1,0 +1,35 @@
+- name: Install lazygit
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+  - name: Get latest lazygit version
+    uri:
+      url: "https://api.github.com/repos/jesseduffield/lazygit/releases/latest"
+      return_content: yes
+    register: lazygit_response
+
+  - name: Extract lazygit version
+    set_fact:
+      lazygit_version: "{{ lazygit_response.json.tag_name | replace('v', '') }}"
+
+  - name: Download lazygit
+    uri:
+      url: "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ lazygit_version }}_Linux_x86_64.tar.gz"
+      dest: "/tmp/lazygit.tar.gz"
+
+  - name: Extract lazygit
+    unarchive:
+      src: "/tmp/lazygit.tar.gz"
+      dest: "/tmp"
+      remote_src: yes
+
+  - name: Install lazygit
+    command: install /tmp/lazygit /usr/local/bin
+    tags: install-lazygit
+
+  - name: Remove lazygit tarball
+    file:
+      path: "/tmp/lazygit.tar.gz"
+      state: absent
