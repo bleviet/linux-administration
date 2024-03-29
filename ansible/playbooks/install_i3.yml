@@ -1,47 +1,37 @@
----
-- name: Add i3 repository and install i3
-  hosts: all
+- name: Install i3
+  hosts: localhost
   become: true
+  vars:
+    i3_repo_url: "http://debian.sur5r.net/i3/"
+    i3_repo_key_url: "https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2024.03.04_all.deb"
+    i3_repo_key_file: "/tmp/keyring.deb"
+    i3_repo_key_sha256: "f9bb4340b5ce0ded29b7e014ee9ce788006e9bbfe31e96c09b2118ab91fca734"
 
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
+  - name: Download i3 repository key
+    get_url:
+      url: "{{ i3_repo_key_url }}"
+      dest: "{{ i3_repo_key_file }}"
+      sha256sum: "{{ i3_repo_key_sha256 }}"
+      mode: '0644'
 
-    - name: Install feh for changing wallpaper
-      apt:
-        name: feh
-        state: present
+  - name: Install i3 repository key
+    apt:
+      deb: "{{ i3_repo_key_file }}"
+      state: present
 
-    - name: Add i3 repository key and install keyring (for Ubuntu)
-      command: "/usr/lib/apt/apt-helper download-file https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2023.02.18_all.deb keyring.deb SHA256:a511ac5f10cd811f8a4ca44d665f2fa1add7a9f09bef238cdfad8461f5239cc4"
-      args:
-        creates: keyring.deb
-      register: keyring_download_result
+  - name: Add i3 repository
+    lineinfile:
+      path: /etc/apt/sources.list.d/sur5r-i3.list
+      line: "deb {{ i3_repo_url }} {{ ansible_distribution_release }} universe"
+      create: yes
+      state: present
 
-    - name: Install i3 keyring (for Ubuntu)
-      apt:
-        deb: "./keyring.deb"
-      when: keyring_download_result is succeeded
+  - name: Update apt cache
+    apt:
+      update_cache: yes
 
-    - name: Add i3 repository (for Ubuntu)
-      lineinfile:
-        path: "/etc/apt/sources.list.d/sur5r-i3.list"
-        line: "deb http://debian.sur5r.net/i3/ $(grep '^DISTRIB_CODENAME=' /etc/lsb-release | cut -f2 -d=) universe"
-      notify: apt update
-
-    - name: Install i3
-      apt:
-        name: i3
-        state: latest
-      notify: restart i3
-
-  handlers:
-    - name: apt update
-      apt:
-        update_cache: yes
-
-    - name: restart i3
-      command: "systemctl --user restart i3"
-      async: 1
-      poll: 0
+  - name: Install i3
+    apt:
+      name: i3
+      state: present
