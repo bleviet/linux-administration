@@ -13,6 +13,7 @@
     - ripgrep
     - tmux
     - curl
+    - feh
 
   tasks:
   - name: Update apt cache
@@ -23,8 +24,3 @@
     apt:
       name: "{{ apt_packages }}"
       state: present
-
-  - name: Install zoxide, a better cd command for your terminal
-    command: curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash -s -- -y
-    become_user: "{{ ansible_user }}"
-    tags: install-zoxide
