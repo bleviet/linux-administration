@@ -24,11 +24,13 @@ alias lg='lazygit'
 alias ls='exa --color=always'
 alias freeplane='freeplane.sh'
 
+# This alias allows you to find a file using fzf, determine the root directory of the Git repository containing that file, and open that file in Neovim with the working directory set to the root of the Git repository.
+alias nvf='file=$(fzf); nvim -c "cd $(git -C $(dirname $file) rev-parse --show-toplevel)" $file'
 # -----------------------------------------------------------------------------
 # zoxide
 # -----------------------------------------------------------------------------
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init bash)"
+	eval "$(zoxide init bash)"
 fi
 
 # -----------------------------------------------------------------------------
