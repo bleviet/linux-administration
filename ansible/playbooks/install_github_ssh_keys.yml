@@ -3,6 +3,13 @@
   hosts: all
   become_user: "{{ ansible_user }}"
   tasks:
+    # Ensure that the .ssh directory exists
+    - name: Create .ssh directory
+      file:
+        path: "/home/{{ ansible_user }}/.ssh"
+        state: directory
+        mode: 0700
+
     - name: Copy id_rsa private key
       copy:
         src: ~/.ssh/id_rsa
