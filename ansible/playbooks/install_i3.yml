@@ -1,37 +1,55 @@
 - name: Install i3
-  hosts: localhost
+  hosts: all
   become: true
-  vars:
-    i3_repo_url: "http://debian.sur5r.net/i3/"
-    i3_repo_key_url: "https://debian.sur5r.net/i3/pool/main/s/sur5r-keyring/sur5r-keyring_2024.03.04_all.deb"
-    i3_repo_key_file: "/tmp/keyring.deb"
-    i3_repo_key_sha256: "f9bb4340b5ce0ded29b7e014ee9ce788006e9bbfe31e96c09b2118ab91fca734"
 
   tasks:
-  - name: Download i3 repository key
-    get_url:
-      url: "{{ i3_repo_key_url }}"
-      dest: "{{ i3_repo_key_file }}"
-      sha256sum: "{{ i3_repo_key_sha256 }}"
-      mode: '0644'
+  - name: Get distribution name
+    command: lsb_release -is
+    register: distro_name
 
-  - name: Install i3 repository key
-    apt:
-      deb: "{{ i3_repo_key_file }}"
-      state: present
+  - name: Get distribution code name
+    command: lsb_release -cs
+    register: distro_codename
 
-  - name: Add i3 repository
+  - name: Add deb-src to sources.list for Ubuntu
     lineinfile:
-      path: /etc/apt/sources.list.d/sur5r-i3.list
-      line: "deb {{ i3_repo_url }} {{ ansible_distribution_release }} universe"
-      create: yes
+      path: /etc/apt/sources.list
+      line: "deb-src http://archive.ubuntu.com/ubuntu {{ distro_codename.stdout }} main universe"
       state: present
+    tags: add-deb-src-ubuntu
+    when: distro_name.stdout == "Ubuntu"
+
+  - name: Add deb-src to sources.list for Debian
+    lineinfile:
+      path: /etc/apt/sources.list
+      line: "deb-src http://deb.debian.org/debian {{ distro_codename.stdout }} main"
+      state: present
+    tags: add-deb-src-debian
+    when: distro_name.stdout == "Debian"
+
+  - name: Install i3 dependencies by using apt-get build-dep i3
+    apt:
+      name: i3
+      state: build-dep
 
   - name: Update apt cache
     apt:
       update_cache: yes
 
-  - name: Install i3
-    apt:
-      name: i3
-      state: present
+  - name: Clone, build and install i3
+    shell: |
+      git clone https://github.com/i3/i3.git /tmp/i3
+      cd /tmp/i3
+      mkdir -p build
+      cd build
+      meson ..
+      ninja
+      ninja install
+    args:
+      executable: /bin/bash
+    tags: clone-build-install-i3
+
+  - name: Remove i3 directory
+    file:
+      path: /tmp/i3
+      state: absent
