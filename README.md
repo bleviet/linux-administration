@@ -1,21 +1,6 @@
 # Linux Administration
 
-This repository contains Ansible playbooks and Docker files for managing my development environments. Tested on Ubuntu 22.04 LTS.
-
-## Directory Structure
-
-- `ansible/`: This directory contains all the Ansible playbooks and related files.
-  - `files/`: This directory contains files that are used by the Ansible playbooks.
-    - `docker/`: This directory contains Docker files for building specific images.
-      - `freeplane-builder/`: Docker files for building a Freeplane image.
-  - `playbooks/`: This directory contains all the Ansible playbooks.
-    - `install_docker.yml`: Playbook for installing Docker.
-    - `install_dotfiles.yml`: Playbook for installing dotfiles.
-    - `install_essential_tools.yml`: Playbook for installing essential tools.
-    - `install_github_ssh_keys.yml`: Playbook for installing GitHub SSH keys.
-    - `install_vscode.yml`: Playbook for installing Visual Studio Code.
-    - `install_tmux.yml`: Playbook for installing tmux.
-    - `main.yml`: The main playbook that includes all other playbooks.
+This repository contains Ansible playbooks and Docker files for managing my development environments. Tested on MXLinux 23.
 
 ## Prerequisites
 
