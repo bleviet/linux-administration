@@ -16,7 +16,7 @@
 
     - name: Copy dotfiles folder into home directory
       copy:
-        src: "../files/dotfiles"
+        src: "../../files/dotfiles"
         dest: "/home/{{ ansible_user }}/"
         mode: 0755
       become_user: "{{ ansible_user }}"
