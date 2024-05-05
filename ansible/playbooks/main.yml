@@ -7,3 +7,6 @@
 - import_playbook: install_neovim.yml
 - import_playbook: install_tmux.yml
 - import_playbook: install_alacritty.yml
+- import_playbook: install_miniconda.yml
+- import_playbook: install_lazygit.yml
+- import_playbook: install_ghdl.yml
