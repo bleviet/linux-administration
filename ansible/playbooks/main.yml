@@ -4,4 +4,4 @@
 - import_playbook: utils/editors/main.yml
 - import_playbook: utils/terminal/main.yml
 - import_playbook: dev/main.yml
-- import_playbook: install_dotfiles.yml
+- import_playbook: dotfiles/main.yml
