@@ -10,3 +10,4 @@
 - import_playbook: install_miniconda.yml
 - import_playbook: install_lazygit.yml
 - import_playbook: install_ghdl.yml
+- import_playbook: install_zoxide.yml
