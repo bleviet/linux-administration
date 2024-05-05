@@ -1,0 +1,4 @@
+---
+- import_playbook: miniconda.yml
+- import_playbook: docker.yml
+- import_playbook: embedded/ghdl.yml

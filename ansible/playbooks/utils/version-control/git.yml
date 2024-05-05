@@ -1,26 +1,17 @@
-- name: Install essential tools
+- name: Install git and related tools from distribution package
   hosts: all
-  gather_facts: true
   become: true
   vars:
     apt_packages:
     - git
     - gitk
-    - fzf
-    - meld
-    - bat
-    - exa
-    - ripgrep
-    - tmux
-    - curl
-    - feh
 
   tasks:
   - name: Update apt cache
     apt:
       update_cache: yes
 
-  - name: Install apt tools
+  - name: Install the apt packages
     apt:
       name: "{{ apt_packages }}"
       state: present

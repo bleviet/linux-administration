@@ -1,13 +1,7 @@
 ---
-- import_playbook: install_essential_tools.yml
-- import_playbook: install_docker.yml
-- import_playbook: install_vscode.yml
-- import_playbook: install_github_ssh_keys.yml
+- import_playbook: utils/version-control/main.yml
+- import_playbook: utils/cmdline/main.yml
+- import_playbook: utils/editors/main.yml
+- import_playbook: utils/terminal/main.yml
+- import_playbook: dev/main.yml
 - import_playbook: install_dotfiles.yml
-- import_playbook: install_neovim.yml
-- import_playbook: install_tmux.yml
-- import_playbook: install_alacritty.yml
-- import_playbook: install_miniconda.yml
-- import_playbook: install_lazygit.yml
-- import_playbook: install_ghdl.yml
-- import_playbook: install_zoxide.yml

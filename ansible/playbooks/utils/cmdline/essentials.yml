@@ -1,0 +1,23 @@
+- name: Install command line tools from distribution package
+  hosts: all
+  become: true
+  vars:
+    apt_packages:
+    - bat
+    - curl
+    - exa
+    - feh
+    - fzf
+    - meld
+    - ripgrep
+    - tmux
+
+  tasks:
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+
+  - name: Install apt packages
+    apt:
+      name: "{{ apt_packages }}"
+      state: present
