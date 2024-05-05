@@ -5,6 +5,12 @@
   become_user: "{{ ansible_user }}"
 
   tasks:
+    - name: Ensure $HOME/tmp directory exists
+      file:
+        path: $HOME/tmp
+        state: directory
+        mode: 0755
+
     - name: Download install.sh script
       get_url:
         url: https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh
@@ -12,3 +18,8 @@
 
     - name: Execute install.sh script
       command: bash $HOME/tmp/install.sh
+
+    - name: Delete $HOME/tmp
+      file:
+        path: $HOME/tmp
+        state: absent
