@@ -9,6 +9,12 @@
         name: tmux
         state: present
 
+    - name: Remove ~/.tmux
+      file:
+        path: ~/.tmux
+        state: absent
+      become_user: "{{ ansible_user }}"
+
     - name: Clone tpm repository
       shell: |
         git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
