@@ -1,0 +1,24 @@
+---
+- name: Install Questasim Intel version
+  hosts: all
+  become: true
+  vars:
+    questa_intaller: QuestaSetup-23.1std.0.991-linux.run
+    questa_install_dir: /opt/intelQuesta/23.1
+
+  tasks:
+    - name: Copy Questa installation folder to /tmp/
+      copy:
+        src: ../../../../files/intel/quartus
+        dest: /tmp/
+        mode: 0755
+
+    - name: Install Questa
+      shell: |
+        cd /tmp/quartus
+        ./{{ questa_intaller }} --mode unattended \
+        --unattendedmodeui none \
+        --installdir {{ questa_install_dir }} \
+        --accept_eula 1
+      args:
+        executable: /bin/bash
